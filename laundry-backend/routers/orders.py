@@ -17,6 +17,7 @@ from schemas import (
     OrderItemOut,
     OrderListItem,
     OrderOut,
+    OrderPaymentUpdate,
     OrderStatusUpdate,
 )
 from services.order_service import (
@@ -24,6 +25,7 @@ from services.order_service import (
     generate_tracking_code,
     get_order_with_items,
     list_orders,
+    update_payment_status,
     update_production_status,
 )
 
@@ -171,5 +173,17 @@ async def update_status(
     _user=Depends(require_kasir),
 ):
     order = await update_production_status(order_id, body.current_status, db)
+    order = await get_order_with_items(order.order_id, db)
+    return _to_out(order, with_items=True)
+
+
+@router.patch("/{order_id}/payment", response_model=OrderOut)
+async def update_payment(
+    order_id: int,
+    body: OrderPaymentUpdate,
+    db: AsyncSession = Depends(get_db),
+    _user=Depends(require_kasir),
+):
+    order = await update_payment_status(order_id, body.payment_status, db)
     order = await get_order_with_items(order.order_id, db)
     return _to_out(order, with_items=True)

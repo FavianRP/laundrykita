@@ -197,6 +197,27 @@ MUNDUR=$(curl -s -o /dev/null -w "%{http_code}" -X PATCH "$BASE/orders/$ORDER_ID
 [ "$MUNDUR" = "422" ] && pass "Workflow logic enforced: State reversion rejected (422 Unprocessable Entity)" || fail "Workflow violation: expected 422, received $MUNDUR"
 
 # ================================================================
+section "8.5 OPERATIONS — PAYMENT STATE MODIFICATION"
+# ================================================================
+info "Executing PATCH /api/orders/$ORDER_ID/payment (Transition to: Lunas)"
+PAYMENT_RES=$(curl -s -X PATCH "$BASE/orders/$ORDER_ID/payment" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $KASIR_TOKEN" \
+  -d '{"payment_status": "Lunas"}')
+
+NEW_PAYMENT=$(echo "$PAYMENT_RES" | python3 -c "import sys,json; print(json.load(sys.stdin).get('payment_status',''))" 2>/dev/null | tr -d '\r')
+[ "$NEW_PAYMENT" = "Lunas" ] && pass "Financial state transitioned to: Lunas" || fail "Payment state transition failed: $NEW_PAYMENT"
+
+info "Executing PATCH /api/orders/$ORDER_ID/payment (Reverting to: Belum Lunas for subsequent tests)"
+REVERT_PAY=$(curl -s -X PATCH "$BASE/orders/$ORDER_ID/payment" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $KASIR_TOKEN" \
+  -d '{"payment_status": "Belum Lunas"}')
+
+REVERT_STATUS=$(echo "$REVERT_PAY" | python3 -c "import sys,json; print(json.load(sys.stdin).get('payment_status',''))" 2>/dev/null | tr -d '\r')
+[ "$REVERT_STATUS" = "Belum Lunas" ] && pass "Financial state reverted to: Belum Lunas" || fail "Payment state revert failed: $REVERT_STATUS"
+
+# ================================================================
 section "9. IMMUTABILITY — DIRECT MODIFICATION GUARD"
 # ================================================================
 info "Verifying ledger immutability on locked entities (Expected: Endpoint/Service-level rejection via 403 on financial mutations)"
@@ -447,6 +468,7 @@ echo "  [SUCCESS] Multi-Line Item Order Processing & Transaction Locking Mechani
 echo "  [SUCCESS] CRM Layer Automated Profile Interception and Upsert Routing"
 echo "  [SUCCESS] Unauthenticated Public Trajectory and Status Reporting"
 echo "  [SUCCESS] Monotonic Production Stage Restrictions (No Status Rollback)"
+echo "  [SUCCESS] Financial State Modification (Payment Status Transition)"
 echo "  [SUCCESS] Audit-Friendly Modification Ticketing & Context State Snapshots"
 echo "  [SUCCESS] Structural Line-Item Delta and Variance Accounting (Git-Diff View)"
 echo "  [SUCCESS] Atomic Amendment Execution Routines (Mutex Release -> Ledger Write -> Mutex Lock)"

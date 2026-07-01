@@ -189,6 +189,12 @@ Gunakan nilai berikut untuk dropdown dan kondisi if/else di frontend:
 - *Fungsi:* Mengubah status produksi. Akan ditolak (422) jika status mundur atau order sudah dibatalkan.
 - *Body:* `{ "current_status": "Dicuci" }`
 
+**`PATCH /api/orders/{order_id}/payment`**
+- *Akses:* Kasir, Owner
+- *Fungsi:* Mengubah status pembayaran. Diizinkan meskipun order terkunci karena tidak mengubah kalkulasi nominal finansial. Akan ditolak jika order sudah dibatalkan.
+- *Body:* `{ "payment_status": "Lunas" }` atau `{ "payment_status": "Belum Lunas" }`
+- *Response 200:* Objek Order lengkap.
+
 ---
 
 ### 6.3 Customers (Kasir & Owner)
@@ -313,6 +319,12 @@ Gunakan nilai berikut untuk dropdown dan kondisi if/else di frontend:
    - Jika `true`: Tombol "Edit Pesanan" diubah menjadi "Ajukan Perbaikan".
    - Jika `true`: Input status boleh diakses (karena bukan data finansial).
 3. Cek properti `is_cancelled`. Jika true, sembunyikan semua tombol aksi.
+
+### Penandaan Pembayaran (Kasir)
+1. Pada halaman detail order, sediakan tombol aksi untuk mengubah status pembayaran.
+2. Tombol "Tandai Lunas" hanya ditampilkan jika kondisi terpenuhi: `is_cancelled === false` dan `payment_status === "Belum Lunas"`.
+3. Saat diklik, panggil `PATCH /api/orders/{id}/payment` dengan body `{ "payment_status": "Lunas" }`.
+4. Update state lokal frontend menjadi `Lunas` tanpa perlu reload seluruh halaman.
 
 ### Monitoring Antrean (Kasir/Display)
 1. Fetch data `GET /api/orders?current_status=Antrean`.
