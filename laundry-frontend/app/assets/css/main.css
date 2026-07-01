@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  --color-paper: #f6f3ea;
+  --color-paper-dim: #ece7d8;
+  --color-ink: #211f1a;
+  --color-ink-soft: #5c574c;
+  --color-line: #d9d2bf;
+
+  --color-soap: #2c6b7a;
+  --color-soap-deep: #1d4d59;
+  --color-soap-light: #e3eef0;
+
+  --color-stamp: #b5402a;
+  --color-stamp-light: #f6e3dd;
+
+  --color-pending: #b5811a;
+  --color-pending-light: #f5ecd6;
+
+  --color-go: #3a7a52;
+  --color-go-light: #e3efe6;
+}
+
+html, body, #__nuxt {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  background-image:
+    radial-gradient(circle at 1px 1px, var(--color-line) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+
+/* Perforated ticket edge, used on tracking codes / receipt cards */
+.ticket-edge {
+  position: relative;
+}
+.ticket-edge::before {
+  content: "";
+  position: absolute;
+  left: -10px; right: -10px; bottom: -1px;
+  height: 1px;
+  background-image: radial-gradient(circle, var(--color-line) 1.4px, transparent 1.6px);
+  background-size: 10px 1px;
+  background-repeat: repeat-x;
+}
+
+.stamp {
+  border: 2px solid currentColor;
+  border-radius: 6px;
+  transform: rotate(-2deg);
+  letter-spacing: 0.08em;
+}
+
+::selection {
+  background: var(--color-soap-light);
+  color: var(--color-soap-deep);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-soap);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
