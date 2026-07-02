@@ -90,6 +90,10 @@ class OrderItemOut(BaseModel):
 # ================================================================
 
 
+class OrderPaymentUpdate(BaseModel):
+    payment_status: str = Field(..., pattern="^(Belum Lunas|Lunas)$")
+
+
 class OrderCreate(BaseModel):
     customer_name: str = Field(..., min_length=1, max_length=100)
     customer_phone: str = Field(..., min_length=8, max_length=20)

@@ -295,3 +295,30 @@ async def get_queue_ahead(order_id: int, db: AsyncSession) -> int:
         )
     )
     return int(result.scalar_one())
+
+
+async def update_payment_status(
+    order_id: int,
+    new_status: str,
+    db: AsyncSession,
+) -> Order:
+    """
+    Update status pembayaran.
+    Diizinkan langsung karena tidak mengubah kalkulasi finansial.
+    Ditolak jika order sudah dibatalkan.
+    """
+    result = await db.execute(select(Order).where(Order.order_id == order_id))
+    order = result.scalar_one_or_none()
+
+    if not order:
+        raise BusinessRuleError(f"Order #{order_id} tidak ditemukan.", status_code=404)
+
+    if order.is_cancelled:
+        raise BusinessRuleError(
+            "Tidak dapat mengubah status pembayaran. "
+            f"Order #{order_id} sudah dibatalkan."
+        )
+
+    order.payment_status = new_status
+    await db.flush()
+    return order

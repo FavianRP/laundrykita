@@ -5,11 +5,12 @@ FR-OWN-03: Financial Analytics Engine.
 
 from datetime import date
 
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from database import get_db
 from dependencies import require_owner
-from fastapi import APIRouter, Depends, Query
 from services.analytics_service import get_financial_analytics, get_service_breakdown
-from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/api/analytics", tags=["Analytics & Laporan"])
 

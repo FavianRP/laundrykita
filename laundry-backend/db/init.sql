@@ -141,26 +141,25 @@ CREATE INDEX idx_edit_req_status       ON edit_requests(approval_status);
 
 -- ================================================================
 -- SEED: Akun Owner Pertama
--- Password: owner123 (bcrypt hash)
+-- Password: owner123
 -- ================================================================
 INSERT INTO users (username, password_hash, role) VALUES
-    ('owner', '$2b$12$LJ3m4ys3Lk0JSwHN0KWN/.PYsHFjHxvKvXh7h9RzO8YXqJ0J8KMqe', 'owner')
+    ('owner', '$2b$12$khIv17TrRJTvg73Jdjd8mOEM2sAs/DzrbUS0ZtRHTnxnhH91cBsf2', 'owner')
 ON DUPLICATE KEY UPDATE username = username;
 
 -- ================================================================
 -- SEED: Akun Kasir Demo
--- Password: kasir123 (bcrypt hash)
+-- Password: kasir123
 -- ================================================================
--- BENAR
 INSERT INTO users (username, password_hash, role) VALUES
-    ('kasir1', '$2b$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'kasir')
+    ('kasir1', '$2b$12$C/aivuvezz91vU91Zs7F7eAgkurqgeCOrC.fijcczbWiv7UQ9XZMS', 'kasir')
 ON DUPLICATE KEY UPDATE username = username;
-
--- Fix: kasir role harus 'kasir'
-UPDATE users SET role = 'kasir' WHERE username = 'kasir1';
 
 -- ================================================================
 -- VERIFIKASI
 -- ================================================================
 SELECT '=== DATABASE READY ===' AS status;
 SELECT user_id, username, role, created_at FROM users;
+
+-- Fix: kasir role harus 'kasir'
+UPDATE users SET role = 'kasir' WHERE username = 'kasir1';
