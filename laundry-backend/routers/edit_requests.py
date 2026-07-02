@@ -78,6 +78,11 @@ async def create(
 ):
     """Ajukan perbaikan data item order."""
     er = await create_edit_request(body, user.user_id, db)
+
+    # PERBAIKAN: Flush dan Refresh agar data yang digenerate DB (created_at) termuat
+    await db.flush()
+    await db.refresh(er)
+
     er = await get_edit_request_detail(er.request_id, db)
     return _er_out(er)
 
@@ -90,6 +95,11 @@ async def request_cancel(
 ):
     """Ajukan pembatalan order (soft cancel via approval)."""
     er = await create_cancel_request(body, user.user_id, db)
+
+    # PERBAIKAN: Flush dan Refresh agar data yang digenerate DB (created_at) termuat
+    await db.flush()
+    await db.refresh(er)
+
     return _er_out(er, force_items=[])
 
 

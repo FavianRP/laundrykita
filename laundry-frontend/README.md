@@ -1,4 +1,4 @@
-# Laundrylog — Frontend (Nuxt 3)
+# LaundryKita — Frontend (Nuxt 3)
 
 Frontend untuk Smart Laundry POS & Automated Governance System, dibangun sesuai `README-Laundry.md` (FastAPI backend).
 
