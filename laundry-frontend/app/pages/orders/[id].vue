@@ -102,10 +102,10 @@ const editError = ref("");
 function openEditForm() {
     if (!order.value?.items) return;
     editItems.value = order.value.items.map((it) => ({
-        order_item_id: it.id!,
+        order_item_id: Number(it.item_id),
         service_type: it.service_type,
-        new_weight_quantity: it.weight_quantity,
-        new_price_per_unit: it.price_per_unit,
+        new_weight_quantity: Number(it.weight_quantity),
+        new_price_per_unit: Number(it.price_per_unit),
     }));
     editReason.value = "";
     editError.value = "";
