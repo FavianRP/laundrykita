@@ -11,7 +11,7 @@ class BusinessRuleError(Exception):
     """Pelanggaran aturan bisnis — akan di-map ke 422 atau status_code kustom."""
 
     def __init__(
-        self, detail: str, status_code: int = status.HTTP_422_UNPROCESSABLE_ENTITY
+        self, detail: str, status_code: int = status.HTTP_422_UNPROCESSABLE_CONTENT
     ):
         self.detail = detail
         self.status_code = status_code
